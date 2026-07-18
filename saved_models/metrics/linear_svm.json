@@ -1,0 +1,351 @@
+{
+  "model_id": "linear_svm",
+  "display_name": "Linear SVM",
+  "category": "Margin-based",
+  "one_liner": "Finds the widest possible 'street' (margin) between different categories in the high-dimensional word space.",
+  "explanation": {
+    "plain_language": "Imagine plotting every headline as a point in space. An SVM tries to draw a straight line (or hyperplane) that perfectly separates the categories, pushing the boundary as far away from the points as possible.",
+    "formula": "\\min_{w, b} \\frac{1}{2} ||w||^2 + C \\sum_{i} \\max(0, 1 - y_i(w \\cdot x_i - b))",
+    "why_name": "'Support Vector Machine' refers to the 'support vectors' \u2014 the specific data points that lie exactly on the edge of the margin and define where the boundary is drawn."
+  },
+  "how_it_differs": "Unlike Logistic Regression which tries to maximize the likelihood of probabilities, an SVM only cares about finding the widest possible boundary (margin) between classes. This often yields the absolute highest accuracy for high-dimensional text data, at the cost of native probability estimates.",
+  "pros": [
+    "Often the highest accuracy for text",
+    "Handles high-dimensional sparse data beautifully",
+    "Robust against overfitting"
+  ],
+  "cons": [
+    "No native probabilities (requires calibration)",
+    "Hard to interpret directly",
+    "Slower to train than Naive Bayes"
+  ],
+  "best_for": "Achieving maximum accuracy on high-dimensional data like TF-IDF vectors.",
+  "metrics": {
+    "accuracy": 0.8225,
+    "macro_f1": 0.8223,
+    "macro_precision": 0.8225,
+    "macro_recall": 0.8225,
+    "per_class": {
+      "BUSINESS": {
+        "precision": 0.7998102466793169,
+        "recall": 0.843,
+        "f1-score": 0.8208373904576436,
+        "support": 1000.0
+      },
+      "ENTERTAINMENT": {
+        "precision": 0.8023952095808383,
+        "recall": 0.804,
+        "f1-score": 0.8031968031968032,
+        "support": 1000.0
+      },
+      "FOOD & DRINK": {
+        "precision": 0.8445297504798465,
+        "recall": 0.88,
+        "f1-score": 0.861900097943193,
+        "support": 1000.0
+      },
+      "PARENTING": {
+        "precision": 0.7946692991115498,
+        "recall": 0.805,
+        "f1-score": 0.7998012916045703,
+        "support": 1000.0
+      },
+      "POLITICS": {
+        "precision": 0.7952182952182952,
+        "recall": 0.765,
+        "f1-score": 0.7798165137614679,
+        "support": 1000.0
+      },
+      "SPORTS": {
+        "precision": 0.9266600594648167,
+        "recall": 0.935,
+        "f1-score": 0.9308113489298159,
+        "support": 1000.0
+      },
+      "STYLE & BEAUTY": {
+        "precision": 0.8833162743091095,
+        "recall": 0.863,
+        "f1-score": 0.8730399595346484,
+        "support": 1000.0
+      },
+      "TRAVEL": {
+        "precision": 0.8020304568527918,
+        "recall": 0.79,
+        "f1-score": 0.7959697732997482,
+        "support": 1000.0
+      },
+      "WELLNESS": {
+        "precision": 0.7582089552238805,
+        "recall": 0.762,
+        "f1-score": 0.7600997506234414,
+        "support": 1000.0
+      },
+      "WORLD NEWS": {
+        "precision": 0.8180862250262881,
+        "recall": 0.778,
+        "f1-score": 0.7975397232188621,
+        "support": 1000.0
+      }
+    },
+    "confusion_matrix": [
+      [
+        843,
+        11,
+        11,
+        23,
+        35,
+        2,
+        8,
+        16,
+        38,
+        13
+      ],
+      [
+        16,
+        804,
+        13,
+        32,
+        26,
+        11,
+        35,
+        23,
+        25,
+        15
+      ],
+      [
+        8,
+        12,
+        880,
+        16,
+        7,
+        3,
+        10,
+        29,
+        24,
+        11
+      ],
+      [
+        17,
+        30,
+        20,
+        805,
+        18,
+        8,
+        18,
+        18,
+        60,
+        6
+      ],
+      [
+        57,
+        26,
+        4,
+        18,
+        765,
+        10,
+        9,
+        14,
+        18,
+        79
+      ],
+      [
+        6,
+        13,
+        3,
+        12,
+        10,
+        935,
+        3,
+        8,
+        3,
+        7
+      ],
+      [
+        10,
+        36,
+        13,
+        16,
+        4,
+        5,
+        863,
+        17,
+        32,
+        4
+      ],
+      [
+        23,
+        25,
+        56,
+        15,
+        10,
+        12,
+        18,
+        790,
+        22,
+        29
+      ],
+      [
+        31,
+        28,
+        37,
+        57,
+        19,
+        12,
+        10,
+        35,
+        762,
+        9
+      ],
+      [
+        43,
+        17,
+        5,
+        19,
+        68,
+        11,
+        3,
+        35,
+        21,
+        778
+      ]
+    ],
+    "labels_order": [
+      "BUSINESS",
+      "ENTERTAINMENT",
+      "FOOD & DRINK",
+      "PARENTING",
+      "POLITICS",
+      "SPORTS",
+      "STYLE & BEAUTY",
+      "TRAVEL",
+      "WELLNESS",
+      "WORLD NEWS"
+    ]
+  },
+  "timing": {
+    "train_seconds": 3.3111,
+    "avg_inference_ms": 0.0027
+  },
+  "top_features_per_class": {
+    "BUSINESS": [
+      "business",
+      "company",
+      "uber",
+      "krugman",
+      "startup",
+      "leadership",
+      "customer",
+      "financial",
+      "companies",
+      "corporate"
+    ],
+    "ENTERTAINMENT": [
+      "album",
+      "film",
+      "trailer",
+      "films",
+      "singer",
+      "actor",
+      "netflix",
+      "movie",
+      "jenner",
+      "teaser"
+    ],
+    "FOOD & DRINK": [
+      "recipes",
+      "recipe",
+      "food",
+      "cocktails",
+      "cooking",
+      "wine",
+      "kitchen",
+      "cook",
+      "chef",
+      "soup"
+    ],
+    "PARENTING": [
+      "kids",
+      "parenting",
+      "babies",
+      "toddler",
+      "parent",
+      "breastfeeding",
+      "parents",
+      "moms",
+      "mom",
+      "mommy"
+    ],
+    "POLITICS": [
+      "gop",
+      "senate",
+      "republicans",
+      "senator",
+      "charlottesville",
+      "democrats",
+      "obama",
+      "fbi",
+      "morning email",
+      "jeb"
+    ],
+    "SPORTS": [
+      "nfl",
+      "nba",
+      "ncaa",
+      "sports",
+      "kobe",
+      "yankees",
+      "lebron",
+      "espn",
+      "mlb",
+      "fifa"
+    ],
+    "STYLE & BEAUTY": [
+      "fashion",
+      "style",
+      "photos",
+      "hair",
+      "models",
+      "beauty",
+      "wardrobe",
+      "designer",
+      "outfits",
+      "stylish"
+    ],
+    "TRAVEL": [
+      "travel",
+      "tsa",
+      "travelers",
+      "hotel",
+      "hotels",
+      "flights",
+      "vacation",
+      "tourists",
+      "airline",
+      "traveling"
+    ],
+    "WELLNESS": [
+      "meditation",
+      "health",
+      "superfoods",
+      "fearless",
+      "workout",
+      "workouts",
+      "gym",
+      "gps",
+      "cancer",
+      "spiritual"
+    ],
+    "WORLD NEWS": [
+      "refugees",
+      "brexit",
+      "saudi",
+      "israeli",
+      "yemen",
+      "migrants",
+      "aleppo",
+      "pakistan",
+      "refugee",
+      "isis"
+    ]
+  }
+}

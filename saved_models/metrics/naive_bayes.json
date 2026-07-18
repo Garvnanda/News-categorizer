@@ -1,0 +1,351 @@
+{
+  "model_id": "naive_bayes",
+  "display_name": "Multinomial Naive Bayes",
+  "category": "Probabilistic",
+  "one_liner": "Predicts the category with the highest probability given the words in the headline, assuming words are independent.",
+  "explanation": {
+    "plain_language": "Naive Bayes looks at every word in a headline and asks: 'historically, which category do headlines with this word usually belong to?' It multiplies these word-level probabilities together to pick the most likely category.",
+    "formula": "P(C|words) \\propto P(C) \\times \\prod_{i} P(word_i|C)",
+    "why_name": "It's called 'naive' because it assumes every word's probability is independent of the others \u2014 which isn't true for language, but works surprisingly well."
+  },
+  "how_it_differs": "Unlike Logistic Regression which optimizes weights based on errors, Naive Bayes simply counts historical word frequencies. This makes it train almost instantly, but its 'naive' assumption that word occurrences are completely independent means it is slightly less accurate.",
+  "pros": [
+    "Extremely fast to train and predict",
+    "Works well with small data",
+    "Naturally handles many classes"
+  ],
+  "cons": [
+    "Ignores word order and context",
+    "Independence assumption is unrealistic",
+    "Overconfident probabilities"
+  ],
+  "best_for": "Quick baselines and situations with limited training data or compute.",
+  "metrics": {
+    "accuracy": 0.7984,
+    "macro_f1": 0.7991,
+    "macro_precision": 0.801,
+    "macro_recall": 0.7984,
+    "per_class": {
+      "BUSINESS": {
+        "precision": 0.7769857433808554,
+        "recall": 0.763,
+        "f1-score": 0.7699293642785066,
+        "support": 1000.0
+      },
+      "ENTERTAINMENT": {
+        "precision": 0.781586679725759,
+        "recall": 0.798,
+        "f1-score": 0.7897080653142009,
+        "support": 1000.0
+      },
+      "FOOD & DRINK": {
+        "precision": 0.8179218303145853,
+        "recall": 0.858,
+        "f1-score": 0.8374816983894583,
+        "support": 1000.0
+      },
+      "PARENTING": {
+        "precision": 0.6855855855855856,
+        "recall": 0.761,
+        "f1-score": 0.7213270142180095,
+        "support": 1000.0
+      },
+      "POLITICS": {
+        "precision": 0.8008519701810437,
+        "recall": 0.752,
+        "f1-score": 0.7756575554409489,
+        "support": 1000.0
+      },
+      "SPORTS": {
+        "precision": 0.9133537206931702,
+        "recall": 0.896,
+        "f1-score": 0.9045936395759717,
+        "support": 1000.0
+      },
+      "STYLE & BEAUTY": {
+        "precision": 0.9014557670772676,
+        "recall": 0.805,
+        "f1-score": 0.8505018489170628,
+        "support": 1000.0
+      },
+      "TRAVEL": {
+        "precision": 0.7790811339198436,
+        "recall": 0.797,
+        "f1-score": 0.7879387048937222,
+        "support": 1000.0
+      },
+      "WELLNESS": {
+        "precision": 0.7280876494023905,
+        "recall": 0.731,
+        "f1-score": 0.7295409181636726,
+        "support": 1000.0
+      },
+      "WORLD NEWS": {
+        "precision": 0.8246492985971944,
+        "recall": 0.823,
+        "f1-score": 0.8238238238238238,
+        "support": 1000.0
+      }
+    },
+    "confusion_matrix": [
+      [
+        763,
+        10,
+        18,
+        35,
+        58,
+        6,
+        3,
+        22,
+        64,
+        21
+      ],
+      [
+        15,
+        798,
+        10,
+        48,
+        28,
+        15,
+        40,
+        24,
+        12,
+        10
+      ],
+      [
+        9,
+        11,
+        858,
+        32,
+        2,
+        5,
+        7,
+        49,
+        23,
+        4
+      ],
+      [
+        24,
+        49,
+        25,
+        761,
+        12,
+        10,
+        12,
+        28,
+        76,
+        3
+      ],
+      [
+        60,
+        23,
+        2,
+        24,
+        752,
+        15,
+        1,
+        17,
+        21,
+        85
+      ],
+      [
+        7,
+        17,
+        5,
+        15,
+        15,
+        896,
+        5,
+        14,
+        9,
+        17
+      ],
+      [
+        16,
+        59,
+        22,
+        40,
+        6,
+        4,
+        805,
+        16,
+        29,
+        3
+      ],
+      [
+        25,
+        16,
+        52,
+        34,
+        5,
+        13,
+        11,
+        797,
+        22,
+        25
+      ],
+      [
+        21,
+        26,
+        55,
+        101,
+        16,
+        12,
+        6,
+        25,
+        731,
+        7
+      ],
+      [
+        42,
+        12,
+        2,
+        20,
+        45,
+        5,
+        3,
+        31,
+        17,
+        823
+      ]
+    ],
+    "labels_order": [
+      "BUSINESS",
+      "ENTERTAINMENT",
+      "FOOD & DRINK",
+      "PARENTING",
+      "POLITICS",
+      "SPORTS",
+      "STYLE & BEAUTY",
+      "TRAVEL",
+      "WELLNESS",
+      "WORLD NEWS"
+    ]
+  },
+  "timing": {
+    "train_seconds": 0.074,
+    "avg_inference_ms": 0.0006
+  },
+  "top_features_per_class": {
+    "BUSINESS": [
+      "business",
+      "new",
+      "company",
+      "wall",
+      "companies",
+      "people",
+      "women",
+      "work",
+      "ceo",
+      "time"
+    ],
+    "ENTERTAINMENT": [
+      "new",
+      "film",
+      "star",
+      "movie",
+      "music",
+      "actor",
+      "trailer",
+      "like",
+      "says",
+      "just"
+    ],
+    "FOOD & DRINK": [
+      "recipes",
+      "food",
+      "recipe",
+      "best",
+      "photos",
+      "make",
+      "day",
+      "eat",
+      "just",
+      "like"
+    ],
+    "PARENTING": [
+      "kids",
+      "children",
+      "parents",
+      "baby",
+      "child",
+      "mom",
+      "parenting",
+      "time",
+      "moms",
+      "family"
+    ],
+    "POLITICS": [
+      "gop",
+      "clinton",
+      "republicans",
+      "obama",
+      "house",
+      "hillary",
+      "state",
+      "court",
+      "new",
+      "senate"
+    ],
+    "SPORTS": [
+      "nfl",
+      "game",
+      "football",
+      "team",
+      "olympic",
+      "sports",
+      "nba",
+      "players",
+      "win",
+      "player"
+    ],
+    "STYLE & BEAUTY": [
+      "photos",
+      "style",
+      "fashion",
+      "look",
+      "check",
+      "week",
+      "hair",
+      "dress",
+      "photo",
+      "new"
+    ],
+    "TRAVEL": [
+      "travel",
+      "photos",
+      "best",
+      "world",
+      "new",
+      "hotel",
+      "hotels",
+      "trip",
+      "city",
+      "10"
+    ],
+    "WELLNESS": [
+      "health",
+      "life",
+      "study",
+      "people",
+      "time",
+      "cancer",
+      "sleep",
+      "healthy",
+      "new",
+      "help"
+    ],
+    "WORLD NEWS": [
+      "attack",
+      "people",
+      "killed",
+      "president",
+      "syria",
+      "world",
+      "korea",
+      "isis",
+      "north",
+      "war"
+    ]
+  }
+}

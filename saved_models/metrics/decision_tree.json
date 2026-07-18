@@ -1,0 +1,351 @@
+{
+  "model_id": "decision_tree",
+  "display_name": "Decision Tree",
+  "category": "Tree-based",
+  "one_liner": "Learns a flowchart-like set of if/then rules based on word presence to categorize headlines.",
+  "explanation": {
+    "plain_language": "A Decision Tree acts like a game of 20 Questions. It asks things like: 'Does the text contain the word game?' If yes, go left (sports). If no, go right (ask another question).",
+    "formula": "Gini = 1 - \\sum_{i=1}^c (p_i)^2 \\quad \\text{(Splitting criteria)}",
+    "why_name": "It literally builds a tree structure of decisions from the root down to the 'leaves' (the final predictions)."
+  },
+  "how_it_differs": "Unlike the Random Forest's 200 trees, this is a single tree. It is perfectly transparent and easy to explain, but highly prone to overfitting, which you can clearly see in its significantly lower test accuracy.",
+  "pros": [
+    "Extremely easy to explain and visualize",
+    "Captures non-linear rules natively",
+    "Fast to predict"
+  ],
+  "cons": [
+    "Prone to severe overfitting",
+    "Often lower accuracy on its own",
+    "Unstable (small data changes change the whole tree)"
+  ],
+  "best_for": "Situations where absolute interpretability and transparency of the exact decision path are required.",
+  "metrics": {
+    "accuracy": 0.346,
+    "macro_f1": 0.3802,
+    "macro_precision": 0.6859,
+    "macro_recall": 0.346,
+    "per_class": {
+      "BUSINESS": {
+        "precision": 0.73568281938326,
+        "recall": 0.167,
+        "f1-score": 0.2722086389568052,
+        "support": 1000.0
+      },
+      "ENTERTAINMENT": {
+        "precision": 0.7559523809523809,
+        "recall": 0.127,
+        "f1-score": 0.21746575342465754,
+        "support": 1000.0
+      },
+      "FOOD & DRINK": {
+        "precision": 0.7802197802197802,
+        "recall": 0.355,
+        "f1-score": 0.4879725085910653,
+        "support": 1000.0
+      },
+      "PARENTING": {
+        "precision": 0.7256493506493507,
+        "recall": 0.447,
+        "f1-score": 0.5532178217821783,
+        "support": 1000.0
+      },
+      "POLITICS": {
+        "precision": 0.8726415094339622,
+        "recall": 0.185,
+        "f1-score": 0.30528052805280526,
+        "support": 1000.0
+      },
+      "SPORTS": {
+        "precision": 0.8753894080996885,
+        "recall": 0.281,
+        "f1-score": 0.4254352763058289,
+        "support": 1000.0
+      },
+      "STYLE & BEAUTY": {
+        "precision": 0.8269230769230769,
+        "recall": 0.516,
+        "f1-score": 0.6354679802955665,
+        "support": 1000.0
+      },
+      "TRAVEL": {
+        "precision": 0.6412429378531074,
+        "recall": 0.227,
+        "f1-score": 0.3353028064992615,
+        "support": 1000.0
+      },
+      "WELLNESS": {
+        "precision": 0.5062761506276151,
+        "recall": 0.242,
+        "f1-score": 0.3274695534506089,
+        "support": 1000.0
+      },
+      "WORLD NEWS": {
+        "precision": 0.13949579831932774,
+        "recall": 0.913,
+        "f1-score": 0.24201457919151756,
+        "support": 1000.0
+      }
+    },
+    "confusion_matrix": [
+      [
+        167,
+        3,
+        3,
+        11,
+        2,
+        1,
+        2,
+        2,
+        39,
+        770
+      ],
+      [
+        2,
+        127,
+        6,
+        28,
+        3,
+        8,
+        12,
+        7,
+        27,
+        780
+      ],
+      [
+        7,
+        3,
+        355,
+        13,
+        1,
+        6,
+        19,
+        27,
+        18,
+        551
+      ],
+      [
+        4,
+        11,
+        11,
+        447,
+        6,
+        3,
+        14,
+        19,
+        41,
+        444
+      ],
+      [
+        16,
+        3,
+        3,
+        16,
+        185,
+        5,
+        2,
+        3,
+        26,
+        741
+      ],
+      [
+        2,
+        4,
+        0,
+        12,
+        0,
+        281,
+        6,
+        4,
+        16,
+        675
+      ],
+      [
+        1,
+        6,
+        10,
+        14,
+        1,
+        2,
+        516,
+        54,
+        19,
+        377
+      ],
+      [
+        9,
+        4,
+        36,
+        23,
+        2,
+        2,
+        44,
+        227,
+        24,
+        629
+      ],
+      [
+        11,
+        3,
+        25,
+        32,
+        5,
+        7,
+        4,
+        6,
+        242,
+        665
+      ],
+      [
+        8,
+        4,
+        6,
+        20,
+        7,
+        6,
+        5,
+        5,
+        26,
+        913
+      ]
+    ],
+    "labels_order": [
+      "BUSINESS",
+      "ENTERTAINMENT",
+      "FOOD & DRINK",
+      "PARENTING",
+      "POLITICS",
+      "SPORTS",
+      "STYLE & BEAUTY",
+      "TRAVEL",
+      "WELLNESS",
+      "WORLD NEWS"
+    ]
+  },
+  "timing": {
+    "train_seconds": 3.0634,
+    "avg_inference_ms": 0.0003
+  },
+  "top_features_per_class": {
+    "BUSINESS": [
+      "business",
+      "new",
+      "company",
+      "wall",
+      "companies",
+      "people",
+      "women",
+      "work",
+      "ceo",
+      "time"
+    ],
+    "ENTERTAINMENT": [
+      "new",
+      "film",
+      "star",
+      "movie",
+      "music",
+      "actor",
+      "trailer",
+      "like",
+      "says",
+      "just"
+    ],
+    "FOOD & DRINK": [
+      "recipes",
+      "food",
+      "recipe",
+      "best",
+      "photos",
+      "make",
+      "day",
+      "eat",
+      "just",
+      "like"
+    ],
+    "PARENTING": [
+      "kids",
+      "children",
+      "parents",
+      "baby",
+      "child",
+      "mom",
+      "parenting",
+      "time",
+      "moms",
+      "family"
+    ],
+    "POLITICS": [
+      "gop",
+      "clinton",
+      "republicans",
+      "obama",
+      "house",
+      "hillary",
+      "state",
+      "court",
+      "new",
+      "senate"
+    ],
+    "SPORTS": [
+      "nfl",
+      "game",
+      "football",
+      "team",
+      "olympic",
+      "sports",
+      "nba",
+      "players",
+      "win",
+      "player"
+    ],
+    "STYLE & BEAUTY": [
+      "photos",
+      "style",
+      "fashion",
+      "look",
+      "check",
+      "week",
+      "hair",
+      "dress",
+      "photo",
+      "new"
+    ],
+    "TRAVEL": [
+      "travel",
+      "photos",
+      "best",
+      "world",
+      "new",
+      "hotel",
+      "hotels",
+      "trip",
+      "city",
+      "10"
+    ],
+    "WELLNESS": [
+      "health",
+      "life",
+      "study",
+      "people",
+      "time",
+      "cancer",
+      "sleep",
+      "healthy",
+      "new",
+      "help"
+    ],
+    "WORLD NEWS": [
+      "attack",
+      "people",
+      "killed",
+      "president",
+      "syria",
+      "world",
+      "korea",
+      "isis",
+      "north",
+      "war"
+    ]
+  }
+}

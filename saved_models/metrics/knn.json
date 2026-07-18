@@ -1,0 +1,351 @@
+{
+  "model_id": "knn",
+  "display_name": "K-Nearest Neighbors",
+  "category": "Instance-based",
+  "one_liner": "Finds the 15 most similar past headlines and assigns the most common category among them.",
+  "explanation": {
+    "plain_language": "KNN doesn't actually 'learn' rules. When given a new headline, it searches the entire training database for the 15 most similar headlines (using cosine similarity) and takes a majority vote.",
+    "formula": "\\text{Similarity}(A,B) = \\frac{A \\cdot B}{||A|| ||B||}",
+    "why_name": "It looks at the 'K' (in our case, 15) 'nearest' (most similar) 'neighbors' (past data points) to make a prediction."
+  },
+  "how_it_differs": "Unlike every other model here, KNN doesn't actually 'learn' any parameters during training. It simply memorizes the training data. This means training is instantaneous, but predicting a new article requires comparing it to all 40,000 training examples, making its inference incredibly slow.",
+  "pros": [
+    "No real training phase (just stores data)",
+    "Very intuitive 'similarity' concept",
+    "Adapts immediately if new data is added"
+  ],
+  "cons": [
+    "Suffers heavily from the 'curse of dimensionality'",
+    "Inference is very slow (compares against all data)",
+    "Requires storing the entire dataset in memory"
+  ],
+  "best_for": "Recommendation systems or simple baselines where training time must be zero.",
+  "metrics": {
+    "accuracy": 0.7005,
+    "macro_f1": 0.6992,
+    "macro_precision": 0.7034,
+    "macro_recall": 0.7005,
+    "per_class": {
+      "BUSINESS": {
+        "precision": 0.621414913957935,
+        "recall": 0.65,
+        "f1-score": 0.635386119257087,
+        "support": 1000.0
+      },
+      "ENTERTAINMENT": {
+        "precision": 0.6709613478691774,
+        "recall": 0.677,
+        "f1-score": 0.6739671478347437,
+        "support": 1000.0
+      },
+      "FOOD & DRINK": {
+        "precision": 0.643652561247216,
+        "recall": 0.867,
+        "f1-score": 0.7388155091606305,
+        "support": 1000.0
+      },
+      "PARENTING": {
+        "precision": 0.6385669125395153,
+        "recall": 0.606,
+        "f1-score": 0.6218573627501283,
+        "support": 1000.0
+      },
+      "POLITICS": {
+        "precision": 0.7189132706374086,
+        "recall": 0.688,
+        "f1-score": 0.7031170158405723,
+        "support": 1000.0
+      },
+      "SPORTS": {
+        "precision": 0.7603305785123967,
+        "recall": 0.828,
+        "f1-score": 0.7927237912876974,
+        "support": 1000.0
+      },
+      "STYLE & BEAUTY": {
+        "precision": 0.7956989247311828,
+        "recall": 0.74,
+        "f1-score": 0.7668393782383419,
+        "support": 1000.0
+      },
+      "TRAVEL": {
+        "precision": 0.717687074829932,
+        "recall": 0.633,
+        "f1-score": 0.6726886291179596,
+        "support": 1000.0
+      },
+      "WELLNESS": {
+        "precision": 0.7038327526132404,
+        "recall": 0.606,
+        "f1-score": 0.6512627619559377,
+        "support": 1000.0
+      },
+      "WORLD NEWS": {
+        "precision": 0.7634408602150538,
+        "recall": 0.71,
+        "f1-score": 0.7357512953367875,
+        "support": 1000.0
+      }
+    },
+    "confusion_matrix": [
+      [
+        650,
+        25,
+        42,
+        56,
+        70,
+        25,
+        11,
+        35,
+        53,
+        33
+      ],
+      [
+        39,
+        677,
+        38,
+        44,
+        31,
+        48,
+        73,
+        20,
+        18,
+        12
+      ],
+      [
+        22,
+        17,
+        867,
+        19,
+        1,
+        17,
+        16,
+        26,
+        11,
+        4
+      ],
+      [
+        57,
+        53,
+        78,
+        606,
+        21,
+        34,
+        34,
+        28,
+        78,
+        11
+      ],
+      [
+        88,
+        25,
+        10,
+        29,
+        688,
+        21,
+        3,
+        29,
+        20,
+        87
+      ],
+      [
+        15,
+        34,
+        22,
+        22,
+        25,
+        828,
+        3,
+        22,
+        11,
+        18
+      ],
+      [
+        22,
+        85,
+        44,
+        28,
+        5,
+        27,
+        740,
+        18,
+        25,
+        6
+      ],
+      [
+        41,
+        42,
+        130,
+        20,
+        17,
+        31,
+        22,
+        633,
+        23,
+        41
+      ],
+      [
+        59,
+        35,
+        99,
+        98,
+        20,
+        30,
+        16,
+        29,
+        606,
+        8
+      ],
+      [
+        53,
+        16,
+        17,
+        27,
+        79,
+        28,
+        12,
+        42,
+        16,
+        710
+      ]
+    ],
+    "labels_order": [
+      "BUSINESS",
+      "ENTERTAINMENT",
+      "FOOD & DRINK",
+      "PARENTING",
+      "POLITICS",
+      "SPORTS",
+      "STYLE & BEAUTY",
+      "TRAVEL",
+      "WELLNESS",
+      "WORLD NEWS"
+    ]
+  },
+  "timing": {
+    "train_seconds": 0.0239,
+    "avg_inference_ms": 0.8083
+  },
+  "top_features_per_class": {
+    "BUSINESS": [
+      "business",
+      "new",
+      "company",
+      "wall",
+      "companies",
+      "people",
+      "women",
+      "work",
+      "ceo",
+      "time"
+    ],
+    "ENTERTAINMENT": [
+      "new",
+      "film",
+      "star",
+      "movie",
+      "music",
+      "actor",
+      "trailer",
+      "like",
+      "says",
+      "just"
+    ],
+    "FOOD & DRINK": [
+      "recipes",
+      "food",
+      "recipe",
+      "best",
+      "photos",
+      "make",
+      "day",
+      "eat",
+      "just",
+      "like"
+    ],
+    "PARENTING": [
+      "kids",
+      "children",
+      "parents",
+      "baby",
+      "child",
+      "mom",
+      "parenting",
+      "time",
+      "moms",
+      "family"
+    ],
+    "POLITICS": [
+      "gop",
+      "clinton",
+      "republicans",
+      "obama",
+      "house",
+      "hillary",
+      "state",
+      "court",
+      "new",
+      "senate"
+    ],
+    "SPORTS": [
+      "nfl",
+      "game",
+      "football",
+      "team",
+      "olympic",
+      "sports",
+      "nba",
+      "players",
+      "win",
+      "player"
+    ],
+    "STYLE & BEAUTY": [
+      "photos",
+      "style",
+      "fashion",
+      "look",
+      "check",
+      "week",
+      "hair",
+      "dress",
+      "photo",
+      "new"
+    ],
+    "TRAVEL": [
+      "travel",
+      "photos",
+      "best",
+      "world",
+      "new",
+      "hotel",
+      "hotels",
+      "trip",
+      "city",
+      "10"
+    ],
+    "WELLNESS": [
+      "health",
+      "life",
+      "study",
+      "people",
+      "time",
+      "cancer",
+      "sleep",
+      "healthy",
+      "new",
+      "help"
+    ],
+    "WORLD NEWS": [
+      "attack",
+      "people",
+      "killed",
+      "president",
+      "syria",
+      "world",
+      "korea",
+      "isis",
+      "north",
+      "war"
+    ]
+  }
+}
