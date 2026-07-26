@@ -1,76 +1,233 @@
-# Multi-Algorithm News Classifier
+# News Category Classifier — The Night Desk
 
-Welcome to the Multi-Algorithm News Classifier! This project is an interactive educational dashboard designed to classify news headlines and descriptions into 10 categories. Rather than just serving a single model, this platform trains, evaluates, and compares **six different machine learning algorithms** on the exact same dataset to demonstrate their relative strengths, weaknesses, and theoretical differences.
+A machine learning project that classifies news headlines into one of 10
+categories, built as a full multi-algorithm comparison tool rather than a
+single model. Six classical ML algorithms are trained on identical data and
+exposed through an interactive dashboard, so anyone — technical or not — can
+explore how each one thinks, where they agree, and where they don't.
 
-## 🏗️ Architecture
-
-The project is split into an offline training pipeline and an online serving pipeline.
-
-```text
-[ Offline Training Phase ]
-news_data.csv 
-  └──> data_loader.py (Cleans text, Stratified 80/20 split, fits shared TF-IDF)
-         └──> train_all_models.py (Orchestrates training across 6 algorithms)
-                ├──> saved_models/*.joblib (Trained model weights)
-                └──> saved_models/metrics/*.json (Standardized UI contracts + Leaderboard)
-
-[ Online Inference Phase ]
-app.py (FastAPI) 
-  ├── Loads all .joblib models and .json metadata into RAM at startup
-  └── Exposes /models, /predict, /predict/compare, and /leaderboard endpoints
-         ^
-         | (HTTP)
-         v
-streamlit_app.py (Frontend)
-  ├── 4-Page Interactive Dashboard (Predict, Explore, Leaderboard, Compare)
-  └── Renders metrics, LaTeX formulas, and Plotly charts dynamically
-```
-
-### Design Principle: The Shared Vectorizer
-All 6 models are compared on equal footing. They share a single `TfidfVectorizer` (capped at 15,000 features) fit exclusively on a static 80% training split. This guarantees that any difference in accuracy or latency between the models is due purely to the algorithmic approach, not the data preparation.
+> **Note:** this README describes the current full architecture (6-model
+> registry + FastAPI backend + multi-page Streamlit dashboard). If your local
+> file layout differs slightly from what's listed below, adjust the paths in
+> the commands to match your actual filenames before running.
 
 ---
 
-## 🧠 The Six Models: What They Teach Us
+## What It Does
 
-| Model | Category | Core Teaching Takeaway |
-| :--- | :--- | :--- |
-| **Logistic Regression** | Linear / Probabilistic | The gold standard baseline. It proves that a simple linear combination of word weights is incredibly effective and fast for high-dimensional text classification. |
-| **Multinomial Naive Bayes** | Probabilistic | Demonstrates how the "naive" assumption of word independence allows for near-instantaneous training by simply counting probabilities, at the cost of a slight accuracy drop. |
-| **Linear SVM** | Margin-based | Shows that maximizing the decision boundary (margin) between classes often yields the absolute highest accuracy for sparse text data, though it requires calibration to output probabilities. |
-| **Decision Tree** | Tree-based | A highly interpretable flowchart model. However, it demonstrates severe **overfitting** when trained alone on 15,000 features, resulting in the lowest test accuracy. |
-| **Random Forest** | Tree Ensemble | Demonstrates how ensembling (averaging 200 trees) fixes the Decision Tree's overfitting problem, capturing complex non-linear patterns at the cost of memory and speed. |
-| **K-Nearest Neighbors** | Instance-based | Highlights the **curse of dimensionality**. With zero training time (it just memorizes data), it struggles to compute distance metrics effectively across 15,000 dimensions and is incredibly slow during inference. |
+- Takes a news headline (or short description) as input
+- Cleans and vectorizes the text (TF-IDF)
+- Runs it through one or more of 6 trained classifiers:
+  Logistic Regression, Multinomial Naive Bayes, Linear SVM, Decision Tree,
+  Random Forest, and K-Nearest Neighbors
+- Returns the predicted category, confidence score, and (per page) an
+  explanation of *why* — top contributing words, confusion matrix, formula,
+  and pros/cons for that algorithm
+- Lets you compare all 6 models side by side on the same input, browse a
+  leaderboard, batch-classify a CSV, and explore the training data
+
+Categories: `WELLNESS`, `POLITICS`, `ENTERTAINMENT`, `TRAVEL`,
+`STYLE & BEAUTY`, `PARENTING`, `FOOD & DRINK`, `WORLD NEWS`, `BUSINESS`,
+`SPORTS`.
 
 ---
 
-## 🚀 How to Run
+## Features / Pages
 
-### 1. Train the Models (Offline Phase)
-Before launching the server, you must train the models and generate the artifacts.
-```bash
-python train_all_models.py
+| Page | What it does |
+|---|---|
+| **File a Story** | Type a headline, pick a model, get a prediction + confidence + top contributing words |
+| **Correspondent Profiles** | Per-model deep dive: plain-language explanation, formula, confusion matrix, pros/cons |
+| **Standings** | Full leaderboard — accuracy, F1, training/inference time, per model |
+| **All Hands on Deck** | Run all 6 models on one input at once, see where they agree/disagree |
+| **Batch Wire** | Upload a CSV of headlines, classify in bulk, download results |
+| **The Morgue** | Browse real training examples by category |
+| **Editor's Challenge** | Guess the category yourself before the models reveal theirs |
+| **Head-to-Head** | Pick any 2 models and compare their predictions side by side |
+
+---
+
+## Tech Stack
+
+- **Python 3.10+**
+- **Pandas** — data loading/manipulation
+- **Scikit-learn** — all 6 ML models, TF-IDF vectorization, evaluation metrics
+- **FastAPI** — backend API that serves trained models
+- **Uvicorn** — ASGI server running the FastAPI app
+- **Streamlit** — interactive multi-page frontend dashboard
+- **Plotly** — charts (leaderboard bars, confusion matrices)
+- **Joblib** — saving/loading trained models and the vectorizer
+
+---
+
+## Project Structure
+
 ```
-*(Note: Random Forest and SVM might take a couple of minutes to train over 15,000 features).*
-
-### 2. Launch the API Backend
-The backend uses FastAPI and must be running to serve the frontend.
-```bash
-uvicorn app:app --reload
-# Runs on http://127.0.0.1:8000
+News-categorizer/
+├── app.py                  # FastAPI backend — serves /models, /predict, /predict/compare, /leaderboard
+├── streamlit_app.py        # Streamlit multi-page frontend dashboard
+├── data_loader.py          # Loads and cleans the raw CSV dataset
+├── train_model.py          # Trains all 6 models on a shared TF-IDF vectorizer + split
+├── news_data.csv           # Training dataset (~50k labeled headlines, 10 categories)
+├── vectorizer.joblib       # Saved, fitted TF-IDF vectorizer (shared across all models)
+├── model.joblib            # Saved trained model(s) — check if this is a single file
+│                            #   or a models/ directory with one .joblib per algorithm
+│                            #   in your actual setup, and adjust accordingly
+├── verify_m1.py             # Milestone verification scripts (one per project milestone)
+├── verify_m3.py
+├── docs/
+│   └── implementation_plan.md   # Full architecture/spec doc used to guide development
+├── .agent/                 # Antigravity agent config (not needed to run the app)
+├── LICENSE                 # MIT License
+└── README.md
 ```
 
-### 3. Launch the Dashboard
-In a separate terminal, launch the Streamlit frontend.
+---
+
+## Prerequisites
+
+Before running anything, make sure you have:
+
+- **Python 3.10 or higher** installed — check with:
+  ```bash
+  python --version
+  ```
+- **pip** (comes with Python)
+- (Recommended) a virtual environment tool — `venv` is built into Python
+
+---
+
+## Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/Garvnanda/News-categorizer.git
+   cd News-categorizer
+   ```
+
+2. **Create and activate a virtual environment** (recommended, keeps
+   dependencies isolated from the rest of your system)
+   ```bash
+   python -m venv venv
+
+   # Windows
+   venv\Scripts\activate
+
+   # macOS / Linux
+   source venv/bin/activate
+   ```
+
+3. **Install dependencies**
+
+   If a `requirements.txt` exists in the repo:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+   If it doesn't exist yet, install directly and then freeze it for next time:
+   ```bash
+   pip install pandas scikit-learn fastapi "uvicorn[standard]" streamlit plotly joblib python-multipart
+
+   pip freeze > requirements.txt
+   ```
+
+---
+
+## How to Run
+
+The project has two parts that run separately — a backend (FastAPI) and a
+frontend (Streamlit). You'll need **two terminal windows**, both with the
+virtual environment activated.
+
+### Step 1 — Train the models (only needed once, or after changing the dataset)
+
+```bash
+python train_model.py
+```
+
+This reads `news_data.csv`, cleans it, fits the TF-IDF vectorizer, trains
+all 6 models on an identical train/test split, evaluates each one, and
+saves the vectorizer + trained models to disk. Skip this step if
+`vectorizer.joblib` and the trained model files already exist and you
+haven't changed the dataset.
+
+### Step 2 — Start the backend API
+
+In your first terminal:
+```bash
+uvicorn app:app --reload --port 8000
+```
+
+This starts the FastAPI server at `http://localhost:8000`. You can check it's
+running by visiting `http://localhost:8000/docs` in a browser — FastAPI
+auto-generates an interactive API doc page there.
+
+### Step 3 — Start the frontend dashboard
+
+In a second terminal (with the same virtual environment activated):
 ```bash
 streamlit run streamlit_app.py
-# Runs on http://localhost:8501
 ```
+
+This opens the dashboard in your browser automatically, usually at
+`http://localhost:8501`. Make sure the backend (Step 2) is already running
+first — the frontend calls the backend's API for every prediction.
 
 ---
 
-## ✅ Verifying the Build
-This repository includes a suite of verification scripts to ensure data integrity and schema compliance at every step.
-- `python verify_m4.py`: Verifies the train/test split and vectorizer integrity.
-- `python verify_m5.py`: Validates that all 6 generated JSON contracts match the required UI schema.
-- `python verify_m6.py`: Runs a test client against all FastAPI endpoints.
+## API Endpoints (backend)
+
+| Endpoint | Method | What it returns |
+|---|---|---|
+| `/models` | GET | List of all available models with metadata |
+| `/models/{model_id}` | GET | Details for one specific model |
+| `/predict` | POST | Prediction from one chosen model for a given text input |
+| `/predict/compare` | POST | Predictions from all 6 models for the same input |
+| `/leaderboard` | GET | Accuracy/F1/timing comparison across all models |
+
+Full interactive docs available at `http://localhost:8000/docs` once the
+backend is running.
+
+---
+
+## The 6 Algorithms at a Glance
+
+| Algorithm | Type | Notes |
+|---|---|---|
+| Logistic Regression | Linear | Strong baseline on sparse high-dimensional text |
+| Multinomial Naive Bayes | Probabilistic | Fast to train, solid baseline for word-count-style features |
+| Linear SVM | Linear (margin-based) | Typically a top performer on TF-IDF text |
+| Decision Tree | Tree-based | Prone to overfitting on high-dimensional data on its own |
+| Random Forest | Ensemble of trees | Reduces the single tree's overfitting via averaging |
+| K-Nearest Neighbors | Distance-based | Included deliberately — expected to underperform here due to the "curse of dimensionality" on sparse TF-IDF vectors, which is itself a useful demonstration |
+
+---
+
+## Dataset
+
+- ~50,000 labeled news headlines/descriptions
+- 10 balanced categories (roughly equal samples each, to avoid class-imbalance bias)
+- Stored as `news_data.csv`, loaded via Pandas in `data_loader.py`
+
+---
+
+## Troubleshooting
+
+- **Frontend loads but predictions fail** — make sure the FastAPI backend
+  (Step 2) is running *before* you start Streamlit, and that the port in
+  `streamlit_app.py`'s API calls matches the port you started `uvicorn` on.
+- **`ModuleNotFoundError`** — you likely forgot to activate the virtual
+  environment, or a dependency wasn't installed. Re-run the install command
+  in the activated environment.
+- **Model/vectorizer files not found** — run `train_model.py` first (Step 1)
+  to generate `vectorizer.joblib` and the model files before starting the app.
+
+---
+
+## License
+
+MIT License — see `LICENSE` for details.
+
+## Author
+
+Garv Nanda — B.Tech CSE, GGSIPU
