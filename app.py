@@ -56,7 +56,6 @@ class CompareRequest(BaseModel):
 
 @app.get("/models")
 def get_models():
-    """Returns a summary list of all models."""
     summaries = []
     for model_id, data in MODEL_REGISTRY.items():
         metrics = data['metrics']
@@ -71,7 +70,6 @@ def get_models():
 
 @app.get("/models/{model_id}")
 def get_model_details(model_id: str):
-    """Returns the full metadata JSON for that model."""
     if model_id not in MODEL_REGISTRY:
         raise HTTPException(status_code=404, detail=f"Model {model_id} not found.")
     return MODEL_REGISTRY[model_id]['metrics']
@@ -81,8 +79,6 @@ def get_leaderboard():
     return LEADERBOARD
 
 def get_linear_top_words(model, model_id, vectorized_text, feature_names, predicted_category, metrics_json):
-    """Helper to find top words present in input that drove the prediction."""
-    # Find words present in the input
     nonzero_indices = vectorized_text.nonzero()[1]
     if len(nonzero_indices) == 0:
         return []
@@ -94,7 +90,6 @@ def get_linear_top_words(model, model_id, vectorized_text, feature_names, predic
     except ValueError:
         class_idx = labels_order.index(predicted_category)
     
-    # Extract coefficients
     coefs = None
     if hasattr(model, 'coef_'):
         coefs = model.coef_
@@ -116,14 +111,10 @@ def get_linear_top_words(model, model_id, vectorized_text, feature_names, predic
             pass
             
     if coefs is not None and len(coefs.shape) > 1 and coefs.shape[0] > class_idx:
-        # Get weights for the specific words in the input for the predicted class
         class_coefs = coefs[class_idx]
         word_weights = [(feature_names[idx], class_coefs[idx]) for idx in nonzero_indices]
-        # Sort by weight descending
         word_weights.sort(key=lambda x: x[1], reverse=True)
         return [w[0] for w in word_weights[:10]]
-        
-    # Fallback to static top features (e.g. for trees/KNN)
     return metrics_json['top_features_per_class'].get(predicted_category, [])
 
 @app.post("/predict", response_model=PredictResponse)
@@ -138,27 +129,21 @@ def predict(request: PredictRequest):
     model = registry_entry['model']
     metrics_json = registry_entry['metrics']
     labels_order = metrics_json['metrics']['labels_order']
-    
-    # Preprocess
     cleaned_text = clean_text(request.text)
     vectorized_text = VECTORIZER.transform([cleaned_text])
     
-    # Predict
     prediction_idx = model.predict(vectorized_text)[0]
     predicted_category = str(prediction_idx)
     
-    # Probabilities
     if hasattr(model, 'predict_proba'):
         probs = model.predict_proba(vectorized_text)[0]
     else:
-        # Fallback
         probs = [1.0 if str(c) == predicted_category else 0.0 for c in labels_order]
         
     classes = model.classes_ if hasattr(model, 'classes_') else labels_order
     probabilities = {str(c): float(p) for c, p in zip(classes, probs)}
     confidence = probabilities.get(predicted_category, 0.0)
     
-    # Top contributing words
     feature_names = VECTORIZER.get_feature_names_out()
     top_words = get_linear_top_words(model, request.model_id, vectorized_text, feature_names, predicted_category, metrics_json)
     
