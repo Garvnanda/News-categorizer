@@ -18,7 +18,6 @@ def main():
     )
     
     print("Training Logistic Regression model...")
-    # Increase max_iter to ensure convergence and tune C parameter for better accuracy
     model = LogisticRegression(max_iter=1000, C=5.0)
     model.fit(X_train, y_train)
     

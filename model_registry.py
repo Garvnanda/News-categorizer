@@ -40,7 +40,6 @@ MODEL_REGISTRY = {
     },
     
     "linear_svm": {
-        # Wrap LinearSVC in CalibratedClassifierCV to get predict_proba()
         "estimator": CalibratedClassifierCV(LinearSVC(class_weight='balanced'), cv=3),
         "display_name": "Linear SVM",
         "category": "Margin-based",

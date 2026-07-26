@@ -9,7 +9,6 @@ import random
 import io
 import html
 
-# Page config must be the first Streamlit command
 st.set_page_config(page_title="The Night Desk", page_icon="📰", layout="wide", initial_sidebar_state="collapsed")
 
 API_URL = "http://127.0.0.1:8001"
@@ -453,7 +452,6 @@ h2 { font-size: 24px !important; margin-top: 1.2rem !important; margin-bottom: 0
 </style>
 """, unsafe_allow_html=True)
 
-# Custom Plotly Template for Dark Mode
 colors = ['#B23A48', '#2F6B55', '#C9A227', '#EDE8DE', '#9B968C', '#5B5F68', '#4A7A7B', '#8A4F3D']
 pio.templates["wireroom"] = go.layout.Template(
     layout=go.Layout(
@@ -467,7 +465,6 @@ pio.templates["wireroom"] = go.layout.Template(
 )
 pio.templates.default = "wireroom"
 
-# Component helpers with html escaping
 def dispatch_note(msg_type, msg):
     type_class = f"dispatch-{esc(msg_type).lower()}"
     label = "DISPATCH" if str(msg_type).lower() == 'success' else str(msg_type).upper()
@@ -487,7 +484,6 @@ def render_stamp(category: str, confidence: float | None = None) -> str:
     </div>
     """
 
-# API Calls
 @st.cache_data(ttl=60)
 def fetch_models():
     try:
@@ -536,7 +532,6 @@ def predict_compare(text):
         pass
     return None
 
-# Local Data Loading for Morgue and Challenge
 @st.cache_data
 def load_archive_sample():
     try:
@@ -550,7 +545,6 @@ def load_archive_sample():
 
 archive_df = load_archive_sample()
 
-# Session State for Editor's Challenge
 if 'challenge_wins' not in st.session_state:
     st.session_state.challenge_wins = 0
 if 'challenge_played' not in st.session_state:
@@ -562,14 +556,12 @@ if 'challenge_revealed' not in st.session_state:
 if 'challenge_guess' not in st.session_state:
     st.session_state.challenge_guess = None
 
-# Navigation State
 if 'current_page' not in st.session_state:
     st.session_state.current_page = "File a Story"
 
 models = fetch_models()
 wire_status_html = "<span class='wire-status' style='color: var(--emerald);'>● WIRE ACTIVE</span>" if models else "<span class='wire-status' style='color: var(--wine);'>● DESK OFFLINE</span>"
 
-# --- TOP MASTHEAD ---
 st.markdown(f"""
 <div style="display: flex; justify-content: space-between; align-items: flex-end;">
     <div>
@@ -585,7 +577,6 @@ if not models:
     dispatch_note("error", f"Cannot connect to backend server on {esc(API_URL)}. Ensure uvicorn is running.")
     st.stop()
 
-# --- TOP MASTHEAD NAVIGATION BAR ---
 current = st.session_state.current_page
 
 st.markdown("<div class='nav-group-title'>THE DESK</div>", unsafe_allow_html=True)
@@ -610,7 +601,6 @@ for p, col in zip(archive_pages, [a1, a2, a3, a4]):
 
 st.markdown("<div style='border-bottom: 1px dotted var(--rule); margin: 15px 0 25px 0;'></div>", unsafe_allow_html=True)
 
-# --- MINIMAL SIDEBAR CONTROL ---
 with st.sidebar:
     st.markdown("<h3 style='margin-top:0;'>DESK SUMMARY</h3>", unsafe_allow_html=True)
     st.markdown(f"<div class='annotations-list'>Active Page: <b>{esc(current)}</b></div>", unsafe_allow_html=True)
@@ -622,7 +612,6 @@ default_model_name = next((m['display_name'] for m in models if m['model_id'] ==
 
 selected_page = st.session_state.current_page
 
-# --- PAGE 1: FILE A STORY ---
 if selected_page == "File a Story":
     st.markdown("<h2>File a story to the desk</h2>", unsafe_allow_html=True)
     col1, col2 = st.columns([3, 1])
@@ -642,7 +631,6 @@ if selected_page == "File a Story":
                     st.markdown("<div class='reveal'>", unsafe_allow_html=True)
                     dispatch_note("success", f"Dispatch categorized by {esc(selected_name)}.")
                     
-                    # Asymmetric layout: 3:2 split
                     c1, c2 = st.columns([3, 2])
                     with c1:
                         cat_str = esc(result['predicted_category'])
@@ -686,7 +674,6 @@ if selected_page == "File a Story":
                 else:
                     dispatch_note("error", "Dispatch failed to process through API.")
 
-# --- PAGE 2: CORRESPONDENT PROFILES ---
 elif selected_page == "Correspondent Profiles":
     st.markdown("<h2>Correspondent Dossiers</h2>", unsafe_allow_html=True)
     selected_exp_name = st.selectbox("Select Correspondent", options=list(model_options.keys()), key="exp_select", label_visibility="collapsed")
@@ -695,7 +682,6 @@ elif selected_page == "Correspondent Profiles":
         details = fetch_model_details(model_options[selected_exp_name])
         
     if details:
-        # Asymmetric layout: Left (3) for prose/formula, Right (2) for metrics/matrix
         c_left, c_right = st.columns([3, 2])
         
         with c_left:
@@ -733,7 +719,6 @@ elif selected_page == "Correspondent Profiles":
             m = details['metrics']
             acc_pct = f"{m['accuracy']*100:.1f}%"
             
-            # Large hero metric
             st.markdown(f"""
             <div style="margin-bottom:20px;">
                 <div class="hero-metric-num">{acc_pct}</div>
@@ -741,7 +726,6 @@ elif selected_page == "Correspondent Profiles":
             </div>
             """, unsafe_allow_html=True)
             
-            # Secondary unboxed inline metrics row
             st.markdown(f"""
             <div class="metric-inline-group">
                 <div class="metric-inline-item">
@@ -765,7 +749,6 @@ elif selected_page == "Correspondent Profiles":
             cm = np.array(m['confusion_matrix'])
             labels = m['labels_order']
             
-            # Enhanced 4-stop color scale from background to deep wine
             wine_scale = [
                 [0.0, '#191B21'],
                 [0.25, '#3B1F27'],
@@ -778,7 +761,6 @@ elif selected_page == "Correspondent Profiles":
             st.plotly_chart(fig_cm, use_container_width=True, config={'displayModeBar': False})
             st.markdown(f"<div class='chart-caption'>Test set confusion matrix for {esc(details['display_name'])}.</div>", unsafe_allow_html=True)
 
-# --- PAGE 3: STANDINGS ---
 elif selected_page == "Standings":
     st.markdown("<h2>Current Standings</h2>", unsafe_allow_html=True)
     leaderboard = fetch_leaderboard()
@@ -817,7 +799,6 @@ elif selected_page == "Standings":
         html_table += "</table>"
         st.markdown(html_table, unsafe_allow_html=True)
 
-# --- PAGE 4: ALL HANDS ON DECK ---
 elif selected_page == "All Hands on Deck":
     st.markdown("<h2>All Hands On Deck</h2>", unsafe_allow_html=True)
     compare_input = st.text_area("Dispatch Text", height=100, key="compare_input", label_visibility="collapsed", placeholder="Enter a story to see all 6 correspondents file a report...")
@@ -861,7 +842,6 @@ elif selected_page == "All Hands on Deck":
                 else:
                     dispatch_note("error", "Failed to retrieve reports.")
 
-# --- PAGE 5: BATCH WIRE ---
 elif selected_page == "Batch Wire":
     st.markdown("<h2>Batch Wire</h2>", unsafe_allow_html=True)
     st.markdown("Upload a CSV file containing a `headline` column to bulk-process dispatches through a correspondent.")
@@ -935,7 +915,6 @@ elif selected_page == "Batch Wire":
         except Exception as e:
             dispatch_note("error", f"Failed to process CSV file: {esc(e)}")
 
-# --- PAGE 6: THE MORGUE ---
 elif selected_page == "The Morgue":
     st.markdown("<h2>The Morgue</h2>", unsafe_allow_html=True)
     st.markdown("<p class='drop-cap'>Explore the historical archives. These entries represent ground-truth training records used to fit the models.</p>", unsafe_allow_html=True)
@@ -976,7 +955,6 @@ elif selected_page == "The Morgue":
             rem_count = len(filtered_df) - 50
             st.markdown(f"<div class='chart-caption'>... {rem_count} MORE RECORDS HIDDEN ...</div>", unsafe_allow_html=True)
 
-# --- PAGE 7: EDITOR'S CHALLENGE ---
 elif selected_page == "Editor's Challenge":
     st.markdown("<h2>Editor's Challenge</h2>", unsafe_allow_html=True)
     
@@ -1054,12 +1032,10 @@ elif selected_page == "Editor's Challenge":
                 st.session_state.current_challenge = None
                 st.rerun()
 
-# --- PAGE 8: HEAD-TO-HEAD ---
 elif selected_page == "Head-to-Head":
     st.markdown("<h2>Head-to-Head</h2>", unsafe_allow_html=True)
     st.markdown("Pitch two correspondents against each other to compare probability distributions in detail.")
     
-    # Compute dynamic model2 default index based on leaderboard accuracy
     leaderboard_data = fetch_leaderboard()
     model2_default_idx = 1
     if leaderboard_data:

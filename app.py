@@ -24,11 +24,10 @@ def load_models():
             
         for item in LEADERBOARD:
             model_id = item['model_id']
-            # Load model
+            
             model_path = f'saved_models/{model_id}.joblib'
             model = joblib.load(model_path)
             
-            # Load metrics
             metrics_path = f'saved_models/metrics/{model_id}.json'
             with open(metrics_path, 'r') as f:
                 metrics_json = json.load(f)
