@@ -227,7 +227,3 @@ backend is running.
 ## License
 
 MIT License — see `LICENSE` for details.
-
-## Author
-
-Garv Nanda — B.Tech CSE, GGSIPU
