@@ -119,16 +119,9 @@ Before running anything, make sure you have:
 
 3. **Install dependencies**
 
-   If a `requirements.txt` exists in the repo:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-   If it doesn't exist yet, install directly and then freeze it for next time:
+   Install directly:
    ```bash
    pip install pandas scikit-learn fastapi "uvicorn[standard]" streamlit plotly joblib python-multipart
-
-   pip freeze > requirements.txt
    ```
 
 ---
@@ -142,7 +135,7 @@ virtual environment activated.
 ### Step 1 — Train the models (only needed once, or after changing the dataset)
 
 ```bash
-python train_model.py
+python train_all_models.py
 ```
 
 This reads `news_data.csv`, cleans it, fits the TF-IDF vectorizer, trains
@@ -155,11 +148,11 @@ haven't changed the dataset.
 
 In your first terminal:
 ```bash
-uvicorn app:app --reload --port 8000
+uvicorn app:app --reload --port 8001
 ```
 
-This starts the FastAPI server at `http://localhost:8000`. You can check it's
-running by visiting `http://localhost:8000/docs` in a browser — FastAPI
+This starts the FastAPI server at `http://localhost:8001`. You can check it's
+running by visiting `http://localhost:8001/docs` in a browser — FastAPI
 auto-generates an interactive API doc page there.
 
 ### Step 3 — Start the frontend dashboard
@@ -185,7 +178,7 @@ first — the frontend calls the backend's API for every prediction.
 | `/predict/compare` | POST | Predictions from all 6 models for the same input |
 | `/leaderboard` | GET | Accuracy/F1/timing comparison across all models |
 
-Full interactive docs available at `http://localhost:8000/docs` once the
+Full interactive docs available at `http://localhost:8001/docs` once the
 backend is running.
 
 ---
