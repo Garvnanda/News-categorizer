@@ -11,7 +11,7 @@ import html
 
 st.set_page_config(page_title="The Night Desk", page_icon="📰", layout="wide", initial_sidebar_state="collapsed")
 
-API_URL = "http://127.0.0.1:8001"
+API_URL = "https://nc-rzir.onrender.com"
 
 def esc(val):
     if val is None:
