@@ -123,6 +123,11 @@ Before running anything, make sure you have:
    ```bash
    pip install pandas scikit-learn fastapi "uvicorn[standard]" streamlit plotly joblib python-multipart
    ```
+   or
+   ```bash
+   pip install -r requirements.txt
+   ```
+
 
 ---
 
