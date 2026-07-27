@@ -538,7 +538,12 @@ def load_archive_sample():
         df = pd.read_csv("news_data.csv")
         if 'category' not in df.columns:
             return pd.DataFrame()
-        sampled = df.groupby('category').apply(lambda x: x.sample(min(len(x), 100), random_state=42)).reset_index(drop=True)
+        # Cap each category at 100 rows using index-based sampling
+        max_per_cat = 100
+        sampled_dfs = []
+        for cat, group in df.groupby('category'):
+            sampled_dfs.append(group.sample(min(len(group), max_per_cat), random_state=42))
+        sampled = pd.concat(sampled_dfs, ignore_index=True)
         return sampled
     except Exception as e:
         return pd.DataFrame()
