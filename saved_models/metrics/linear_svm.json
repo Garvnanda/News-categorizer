@@ -223,8 +223,8 @@
     ]
   },
   "timing": {
-    "train_seconds": 3.3111,
-    "avg_inference_ms": 0.0027
+    "train_seconds": 3.2209,
+    "avg_inference_ms": 0.0024
   },
   "top_features_per_class": {
     "BUSINESS": [
